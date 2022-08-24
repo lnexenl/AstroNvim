@@ -83,8 +83,13 @@ astronvim.status.components.nav = {
 }
 
 astronvim.status.components.filename = {
-  { provider = astronvim.status.provider.fileicon { padding = { left = 1, right = 1 } } },
-  { provider = astronvim.status.provider.filename() },
+  {
+    init = astronvim.status.init.file_info {
+      file_icon = { highlight = false },
+      file_modified = false,
+      padding = { left = 1 },
+    },
+  },
 }
 
 astronvim.status.env.heirline_filename = not astronvim.is_available "bufferline.nvim" -- initiate environment variable
@@ -92,15 +97,21 @@ astronvim.status.components.filename_filetype = {
   condition = astronvim.status.condition.has_filetype,
   hl = { fg = "file_fg" },
   utils.surround(astronvim.status.separators.left, "file_bg", {
-    { provider = astronvim.status.provider.fileicon(), hl = astronvim.status.hl.filetype_color },
     {
       init = utils.pick_child_on_condition,
       { -- if filetype is toggled
         condition = function() return not astronvim.status.env.heirline_filename end,
-        { provider = astronvim.status.provider.filetype { padding = { left = 1 } } },
+        {
+          init = astronvim.status.init.file_info {
+            filetype = {},
+            filename = false,
+            file_modified = false,
+            padding = { left = 1 },
+          },
+        },
       },
       { -- if filename is toggled
-        { provider = astronvim.status.provider.filename { padding = { left = 1 } } },
+        { init = astronvim.status.init.file_info { file_modified = false, padding = { left = 1 } } },
       },
     },
     on_click = {
