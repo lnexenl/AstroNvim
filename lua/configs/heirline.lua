@@ -257,8 +257,10 @@ astronvim.status.components.treesitter = {
   }),
 }
 
-local bar_components = astronvim.user_plugin_opts("heirline.components", {
-  statusline = {
+heirline.load_colors(setup_colors())
+local heirline_opts = astronvim.user_plugin_opts("plugins.heirline", {
+  {
+    hl = { fg = "fg", bg = "bg" },
     astronvim.status.components.left_mode,
     astronvim.status.components.git_branch,
     astronvim.status.components.filename_filetype,
@@ -270,28 +272,11 @@ local bar_components = astronvim.user_plugin_opts("heirline.components", {
     astronvim.status.components.nav,
     astronvim.status.components.right_mode,
   },
-  winbar = {
-    active = { astronvim.status.components.breadcrumbs },
-    inactive = { astronvim.status.components.filename },
-  },
-}, false)
-
-heirline.load_colors(setup_colors())
-local heirline_opts = astronvim.user_plugin_opts("plugins.heirline", {
-  bar_components.statusline and vim.tbl_deep_extend(
-    "force",
-    bar_components.statusline,
-    { hl = { fg = "fg", bg = "bg" } }
-  ) or nil,
-  bar_components.winbar and {
+  {
     init = utils.pick_child_on_condition,
-    vim.tbl_deep_extend(
-      "force",
-      bar_components.winbar.active,
-      { condition = conditions.is_active, hl = { fg = "winbar_fg", bg = "winbar_bg" } }
-    ),
-    vim.tbl_deep_extend("force", bar_components.winbar.inactive, { hl = { fg = "winbarnc_fg", bg = "winbarnc_bg" } }),
-  } or nil,
+    { astronvim.status.components.breadcrumbs },
+    { astronvim.status.components.filename },
+  },
 })
 heirline.setup(heirline_opts[1], heirline_opts[2])
 
